@@ -112,6 +112,10 @@ void memory_write_8(uint16_t addr, uint8_t value) {
 uint16_t memory_read_16(uint16_t addr) {
     if (addr < CARTRIDGE_BANK_0 + CARTRIDGE_BANK_0_SIZE - 1)
         return (uint16_t)(*(memory.cartridge_bank_0 + addr) + (*(memory.cartridge_bank_0 + addr + 1) << 8));
+    if (addr < CARTRIDGE_BANK_N + CARTRIDGE_BANK_N_SIZE - 1)
+        return (uint16_t)(*(memory.cartridge_bank_n + (addr - CARTRIDGE_BANK_N)) + (*(memory.cartridge_bank_n + (addr - CARTRIDGE_BANK_N) + 1) << 8));
+    else if (addr >= WORK_RAM_0 && addr < WORK_RAM_0 + WORK_RAM_0_SIZE - 1)
+        return (uint16_t)(*(memory.work_ram_0 + (addr - WORK_RAM_0)) + (*(memory.work_ram_0 + (addr - WORK_RAM_0) + 1) << 8));
 
     LOG_MESG(LOG_FATAL, "Couldn't read at addr 0x%04X", addr);
     exit(EXIT_FAILURE);
@@ -119,8 +123,9 @@ uint16_t memory_read_16(uint16_t addr) {
 
 void memory_write_16(uint16_t addr, uint16_t value) {
     if (addr >= WORK_RAM_0 && addr < WORK_RAM_0 + WORK_RAM_0_SIZE - 1) { // 4KB Work RAM Bank 0 (WRAM)
-        memory.work_ram_0[addr + 1] = (uint8_t)(value >> 8);
-        memory.work_ram_0[addr] = (uint8_t)(value & 0xFF);
+        memory.work_ram_0[addr - WORK_RAM_0 + 1] = (uint8_t)(value >> 8);
+        memory.work_ram_0[addr - WORK_RAM_0] = (uint8_t)(value & 0xFF);
+        return;
     }
 
     LOG_MESG(LOG_FATAL, "Couldn't write at addr 0x%04X", addr);

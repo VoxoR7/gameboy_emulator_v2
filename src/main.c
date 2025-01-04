@@ -78,7 +78,7 @@ int main() {
         m_cycles_total += m_cycles;
         instruction_executed++;
         interrupt_run(m_cycles);
-        ppu_run(m_cycles);
+        ppu_run(m_cycles, gb_screen);
         input_load();
     } while(!input_is_pressed(INPUT_KEY_ESCAPE));
 

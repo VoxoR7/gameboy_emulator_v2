@@ -101,6 +101,12 @@ void cpu_print_next_instr() {
         case 0x06:
             LOG_MESG(LOG_DEBUG, "%s LD B, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
             break;
+        case 0x0B:
+            LOG_MESG(LOG_DEBUG, "%s DEC BC", msg);
+            break;
+        case 0x0C:
+            LOG_MESG(LOG_DEBUG, "%s INC C", msg);
+            break;
         case 0x0D:
             LOG_MESG(LOG_DEBUG, "%s DEC C", msg);
             break;
@@ -128,14 +134,29 @@ void cpu_print_next_instr() {
         case 0x3E:
             LOG_MESG(LOG_DEBUG, "%s LD A, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
             break;
+        case 0x78:
+            LOG_MESG(LOG_DEBUG, "%s LD A, B", msg);
+            break;
         case 0xAF:
             LOG_MESG(LOG_DEBUG, "%s XOR A, A", msg);
+            break;
+        case 0xB1:
+            LOG_MESG(LOG_DEBUG, "%s OR C", msg);
             break;
         case 0xC3:
             LOG_MESG(LOG_DEBUG, "%s JP a16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
+        case 0xC9:
+            LOG_MESG(LOG_DEBUG, "%s RET", msg);
+            break;
+        case 0xCD:
+            LOG_MESG(LOG_DEBUG, "%s CALL a16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
+            break;
         case 0xE0:
             LOG_MESG(LOG_DEBUG, "%s LD ($FF00+a8), A (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0xE2:
+            LOG_MESG(LOG_DEBUG, "%s ($FF00+C), A", msg);
             break;
         case 0xEA:
             LOG_MESG(LOG_DEBUG, "%s LD (a16), A (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
@@ -189,6 +210,21 @@ uint8_t cpu_execute() {
             cpu.registers.b = memory_read_8(cpu.registers.pc);
             cpu.registers.pc += 1;
             return 2;
+        case 0x0B: /* DEC BC */
+            cpu.registers.bc--;
+            return 2;
+        case 0x0C: /* INC C */
+            cpu.registers.f &= ~FLAGS_N;
+            if (((cpu.registers.c & 0x0F) + 1) & 0xF0)
+                cpu.registers.f |= FLAGS_H;
+            else
+                cpu.registers.f &= ~FLAGS_H;
+            cpu.registers.c++;
+            if (!cpu.registers.c)
+                cpu.registers.f |= FLAGS_Z;
+            else
+                cpu.registers.f &= ~FLAGS_Z;
+            return 1;
         case 0x0D: /* DEC C */
             cpu.registers.f |= FLAGS_N;
             if (((cpu.registers.c & 0x0F) - 1) & 0xF0)
@@ -238,17 +274,39 @@ uint8_t cpu_execute() {
             cpu.registers.a = memory_read_8(cpu.registers.pc);
             cpu.registers.pc += 1;
             return 2;
+        case 0x78: /* LD A, B */
+            cpu.registers.a = cpu.registers.b;
+            return 1;
         case 0xAF: /* XOR A,A */
             cpu.registers.a = 0;
             cpu.registers.f = FLAGS_Z;
             return 1;
+        case 0xB1: /* OR C */
+            cpu.registers.a |= cpu.registers.c;
+            if (cpu.registers.a)
+                cpu.registers.f = FLAGS_RST;
+            else
+                cpu.registers.f = FLAGS_Z;
+            return 1;
         case 0xC3: /* JP a16 */
             cpu.registers.pc = memory_read_16(cpu.registers.pc);
             return 3;
+        case 0xC9: /* RET */
+            cpu.registers.pc = memory_read_16(cpu.registers.sp);
+            cpu.registers.sp += 2;
+            return 4;
+        case 0xCD: /* CALL a16 */
+            cpu.registers.sp -= 2;
+            memory_write_16(cpu.registers.sp, cpu.registers.pc + 2);
+            cpu.registers.pc = memory_read_16(cpu.registers.pc);
+            return 6;
         case 0xE0: /* LD ($FF00+a8),A */
             memory_write_8(0xFF00 + memory_read_8(cpu.registers.pc), cpu.registers.a);
             cpu.registers.pc++;
             return 3;
+        case 0xE2: /* ($FF00+C), A */
+            memory_write_8(0xFF00 + cpu.registers.c, cpu.registers.a);
+            return 2;
         case 0xEA: /* LD (a16), A */
             memory_write_8(memory_read_16(cpu.registers.pc), cpu.registers.a);
             cpu.registers.pc += 2;
