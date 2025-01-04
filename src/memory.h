@@ -14,5 +14,7 @@ uint8_t memory_read_8(uint16_t addr);
 void memory_write_8(uint16_t addr, uint8_t value);
 uint16_t memory_read_16(uint16_t addr);
 void memory_write_16(uint16_t addr, uint16_t value);
+uint8_t *memory_special_get_oam_area();
+uint8_t *memory_special_get_vram();
 
 #endif

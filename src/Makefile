@@ -2,7 +2,7 @@ OBJ_FOLDER=obj
 
 all: prepare ${OBJ_FOLDER}/vge.a
 
-${OBJ_FOLDER}/vge.a: ${OBJ_FOLDER}/main.o ${OBJ_FOLDER}/screen.o ${OBJ_FOLDER}/rom_select.o ${OBJ_FOLDER}/input.o ${OBJ_FOLDER}/cartridge.o ${OBJ_FOLDER}/memory.o ${OBJ_FOLDER}/cpu.o ${OBJ_FOLDER}/interrupt.o ${OBJ_FOLDER}/timer.o ${OBJ_FOLDER}/cpu_debug.o
+${OBJ_FOLDER}/vge.a: ${OBJ_FOLDER}/main.o ${OBJ_FOLDER}/screen.o ${OBJ_FOLDER}/rom_select.o ${OBJ_FOLDER}/input.o ${OBJ_FOLDER}/cartridge.o ${OBJ_FOLDER}/memory.o ${OBJ_FOLDER}/cpu.o ${OBJ_FOLDER}/interrupt.o ${OBJ_FOLDER}/timer.o ${OBJ_FOLDER}/cpu_debug.o ${OBJ_FOLDER}/ppu.o
 	ar r $@ $^
 
 prepare:
@@ -41,4 +41,7 @@ ${OBJ_FOLDER}/timer.o: timer.c
 	${CC} ${C_FLAGS} ${INCLUDES} -c $^ -o $@
 
 ${OBJ_FOLDER}/cpu_debug.o: cpu_debug.c
+	${CC} ${C_FLAGS} ${INCLUDES} -c $^ -o $@
+
+${OBJ_FOLDER}/ppu.o: ppu.c
 	${CC} ${C_FLAGS} ${INCLUDES} -c $^ -o $@

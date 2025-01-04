@@ -124,3 +124,11 @@ void memory_write_16(uint16_t addr, uint16_t value) {
     LOG_MESG(LOG_FATAL, "Couldn't write at addr 0x%04X", addr);
     exit(EXIT_FAILURE);
 }
+
+uint8_t *memory_special_get_oam_area() {
+    return memory.oam_ram;
+}
+
+uint8_t *memory_special_get_vram() {
+    return memory.video_ram;
+}

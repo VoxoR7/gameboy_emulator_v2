@@ -14,6 +14,7 @@
 #include "cpu.h"
 #include "interrupt.h"
 #include "cpu_debug.h"
+#include "ppu.h"
 
 int main() {
     log_init(LOG_DEBUG, NULL);
@@ -77,6 +78,7 @@ int main() {
         m_cycles_total += m_cycles;
         instruction_executed++;
         interrupt_run(m_cycles);
+        ppu_run(m_cycles);
         input_load();
     } while(!input_is_pressed(INPUT_KEY_ESCAPE));
 

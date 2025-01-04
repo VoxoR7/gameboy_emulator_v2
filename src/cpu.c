@@ -234,13 +234,13 @@ uint8_t cpu_execute() {
             uint8_t d8 = memory_read_8(cpu.registers.pc);
             cpu.registers.pc++;
 
-            if (!(((cpu.registers.b & 0x0F) - (d8 & 0x0F)) & 0xF0))
+            if (!(((cpu.registers.a & 0x0F) - (d8 & 0x0F)) & 0xF0))
                 cpu.registers.f &= ~FLAGS_H;
 
-            if (cpu.registers.b - d8)
+            if (cpu.registers.a - d8)
                 cpu.registers.f &= ~FLAGS_Z;
 
-            if (d8 <= cpu.registers.b)
+            if (d8 <= cpu.registers.a)
                 cpu.registers.f &= ~FLAGS_C;
             return 2;
         default:
