@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "log.h"
 
@@ -74,9 +75,81 @@ void cpu_interrupt(uint16_t addr) {
     cpu.registers.pc = addr;
 }
 
+void cpu_print_registers() {
+    printf("\taf: 0x%04X\n", cpu.registers.af);
+    printf("\tbc: 0x%04X\n", cpu.registers.bc);
+    printf("\tde: 0x%04X\n", cpu.registers.de);
+    printf("\thl: 0x%04X\n", cpu.registers.hl);
+    printf("\tsp: 0x%04X\n", cpu.registers.sp);
+    printf("\tpc: 0x%04X\n", cpu.registers.pc);
+}
+
+void cpu_print_next_instr() {
+    uint8_t instr = memory_read_8(cpu.registers.pc);
+    char msg[512];
+    sprintf(msg, "next instruction at pc 0x%04X, instruction 0x%02X -> ", cpu.registers.pc, instr);
+    switch (instr) {
+        case 0x00:
+            LOG_MESG(LOG_DEBUG, "%s NOP", msg);
+            break;
+        case 0x01:
+            LOG_MESG(LOG_DEBUG, "%s LD BC, d16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
+            break;
+        case 0x05:
+            LOG_MESG(LOG_DEBUG, "%s DEC B", msg);
+            break;
+        case 0x06:
+            LOG_MESG(LOG_DEBUG, "%s LD B, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0x0D:
+            LOG_MESG(LOG_DEBUG, "%s DEC C", msg);
+            break;
+        case 0x0E:
+            LOG_MESG(LOG_DEBUG, "%s LD C, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0x20:
+            LOG_MESG(LOG_DEBUG, "%s JR NZ, r8 (%d)", msg, (int8_t)memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0x21:
+            LOG_MESG(LOG_DEBUG, "%s LD HL, d16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
+            break;
+        case 0x32:
+            LOG_MESG(LOG_DEBUG, "%s LD (HL), A; DEC HL", msg);
+            break;
+        case 0x3E:
+            LOG_MESG(LOG_DEBUG, "%s LD A, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0xAF:
+            LOG_MESG(LOG_DEBUG, "%s XOR A, A", msg);
+            break;
+        case 0xC3:
+            LOG_MESG(LOG_DEBUG, "%s JP a16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
+            break;
+        case 0xE0:
+            LOG_MESG(LOG_DEBUG, "%s LD ($FF00+a8), A (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0xF0:
+            LOG_MESG(LOG_DEBUG, "%s LD A, ($FF00+a8) (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0xF3:
+            LOG_MESG(LOG_DEBUG, "%s DI", msg);
+            break;
+        case 0xFE: /* CP d8 */
+            LOG_MESG(LOG_DEBUG, "%s CP d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        default:
+            LOG_MESG(LOG_DEBUG, "%s Unknow next instruction", msg, instr);
+            break;
+    }
+}
+
+uint16_t cpu_get_pc() {
+    return cpu.registers.pc;
+}
+
 uint8_t cpu_execute() {
     uint8_t instr = memory_read_8(cpu.registers.pc);
-    LOG_MESG(LOG_DEBUG, "Instruction 0x%02X (d8 0x%02X, d16 0x%04X) at pc 0x%04X", instr, memory_read_8(cpu.registers.pc), memory_read_16(cpu.registers.pc), cpu.registers.pc);
+    // LOG_MESG(LOG_DEBUG, "Instruction 0x%02X (d8 0x%02X, d16 0x%04X) at pc 0x%04X", instr, memory_read_8(cpu.registers.pc), memory_read_16(cpu.registers.pc), cpu.registers.pc);
     cpu.registers.pc++;
 
     switch (instr) {

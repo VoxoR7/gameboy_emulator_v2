@@ -13,6 +13,7 @@
 #include "memory.h"
 #include "cpu.h"
 #include "interrupt.h"
+#include "cpu_debug.h"
 
 int main() {
     log_init(LOG_DEBUG, NULL);
@@ -65,6 +66,8 @@ int main() {
     uint64_t m_cycles_total = 0, instruction_executed = 0;
 
     do {
+        if (!cpu_debug_run())
+            break;
         uint8_t m_cycles = cpu_execute();
         if (!m_cycles) {
             LOG_MESG(LOG_FATAL, "cpu failed to execute!");
