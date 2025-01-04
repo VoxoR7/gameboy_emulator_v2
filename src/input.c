@@ -28,6 +28,12 @@ void input_load() {
             case SDLK_RETURN:
                 status[INPUT_KEY_ENTER] = pressed;
                 break;
+            case SDLK_Z:
+                status[INPUT_KEY_Z] = pressed;
+                break;
+            case SDLK_S:
+                status[INPUT_KEY_S] = pressed;
+                break;
         }
     }
 }

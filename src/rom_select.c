@@ -104,10 +104,10 @@ char *rom_select_select(struct screen_s *screen) {
         }
     
         input_load();
-        if (input_is_pressed(INPUT_KEY_ARROW_UP)) {
+        if (input_is_pressed(INPUT_KEY_ARROW_UP) || input_is_pressed(INPUT_KEY_Z)) {
             selected = selected == 0 ? roms - 1 : selected - 1;
             key = true;
-        } if (input_is_pressed(INPUT_KEY_ARROW_DOWN)) {
+        } if (input_is_pressed(INPUT_KEY_ARROW_DOWN) || input_is_pressed(INPUT_KEY_S)) {
             selected = selected == roms - 1 ? 0 : selected + 1;
             key = true;
         }

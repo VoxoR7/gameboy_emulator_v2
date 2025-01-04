@@ -6,6 +6,7 @@
 enum input_key_e: uint32_t {
     INPUT_KEY_ESCAPE,
     INPUT_KEY_ARROW_UP, INPUT_KEY_ARROW_DOWN,
+    INPUT_KEY_Z, INPUT_KEY_S,
     INPUT_KEY_ENTER,
     INPUT_KEY_END // Do not use
 };
