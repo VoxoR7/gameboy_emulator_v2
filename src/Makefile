@@ -6,10 +6,10 @@ ${OBJ_FOLDER}/vge.a: ${OBJ_FOLDER}/main.o ${OBJ_FOLDER}/screen.o ${OBJ_FOLDER}/r
 	ar r $@ $^
 
 prepare:
-	mkdir -p ${OBJ_FOLDER}
+	mkdir ${OBJ_FOLDER} ${DISCARD_ERROR}
 
 clean:
-	rm -rf ${OBJ_FOLDER}
+	${RM} ${OBJ_FOLDER} ${DISCARD_ERROR}
 
 clean-all: clean
 

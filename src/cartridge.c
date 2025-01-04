@@ -21,7 +21,7 @@ struct cartridge_s *cartridge_load(char *path) {
     }
     cartridge->bank_loaded = 0;
 
-    FILE *f = fopen(path, "r");
+    FILE *f = fopen(path, "rb");
     if (f == NULL) {
         LOG_MESG(LOG_WARN, "Couldn't open file %s", path);
         return NULL;

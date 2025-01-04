@@ -15,19 +15,32 @@ SDL3_TTF_PATH=/home/mathieu/Documents/dev/tools/SDL_ttf/bin
 SDL3_TTF_INCLUDES=${SDL3_TTF_PATH}/include
 SDL3_TTF_LIB=${SDL3_TTF_PATH}/lib
 
-PWD=${shell pwd}
+
+
+ifeq ($(shell echo "check_quotes"),"check_quotes")
+	WINDOWS=yes
+	SEP=\\
+	PWD=$(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+	DISCARD_ERROR=|| echo skip
+	CP=copy
+	RM=RMDIR /s /q
+else
+	WINDOWS=no
+	SEP=/
+	PWD=${shell pwd}
+	DISCARD_ERROR=|| true
+	CP=cp
+	RM=rm -rf
+endif
 
 INCLUDES=-I${PWD}/lib/log/inc -I${SDL3_INCLUDES} -I${SDL3_TTF_INCLUDES}
 
-LINKER_PATH=-L${SDL3_LIB} -L${SDL3_TTF_LIB} -Llib/lib
-LINKER_FLAGS=-fuse-ld=gold -lSDL3 -lSDL3_ttf '-Wl,-rpath,${SDL3_LIB}' '-Wl,-rpath,${SDL3_TTF_LIB}' -llog
-
-export CC MAKE C_FLAGS INCLUDES
+export CC MAKE C_FLAGS INCLUDES WINDOWS SEP DISCARD_ERROR CP RM
 
 all: ${BINARY_FULLNAME}
 
 ${BINARY_FULLNAME}: lib vge
-	mkdir -p ${BIN_FOLDER}
+	mkdir ${BIN_FOLDER} ${DISCARD_ERROR}
 	${CC} src/obj/vge.a -o ${BINARY_FULLNAME} ${LINKER_PATH} ${LINKER_FLAGS}
 
 lib: FORCE
@@ -42,7 +55,7 @@ clean:
 	cd lib && ${MAKE} clean
 	cd src && ${MAKE} clean
 
-clean-all: 
-	rm -rf ${BIN_FOLDER}
+clean-all:
+	${RM} ${BIN_FOLDER} ${DISCARD_ERROR}
 	cd lib && ${MAKE} clean-all
 	cd src && ${MAKE} clean-all

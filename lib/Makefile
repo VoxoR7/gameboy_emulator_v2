@@ -1,18 +1,20 @@
+CMAKE=C:\Users\mvaud\Documents\info\tools\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-19.1.1-mingw-w64ucrt-12.0.0-r2\mingw64\bin\cmake.exe
+
 LIB_FOLDER=lib
 
 all: prepare log
-	cp ./log/build/liblog.a ${LIB_FOLDER}
+	${CP} $(subst /,${SEP},log/build/liblog.a) ${LIB_FOLDER}
 
 prepare:
-	mkdir -p ${LIB_FOLDER}
+	mkdir ${LIB_FOLDER} ${DISCARD_ERROR}
 
 log: FORCE
-	cd log && mkdir -p build && cd build && cmake .. && make
+	cd log && (mkdir build ${DISCARD_ERROR}) && cd build && ${CMAKE} -G"Unix Makefiles" -DCMAKE_MAKE_PROGRAM=${MAKE} -DCMAKE_C_COMPILER=${CC} .. && ${MAKE}
 
 FORCE: ;
 
 clean:
-	rm -rf ./log/build
+	cd log && ${RM} build ${DISCARD_ERROR}
 
 clean-all: clean
-	rm -rf ${LIB_FOLDER}
+	${RM} ${LIB_FOLDER} ${DISCARD_ERROR}
