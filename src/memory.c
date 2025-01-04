@@ -21,7 +21,7 @@
 #define OAM_RAM 0xFE00
 #define OAM_RAM_SIZE 0x00A0
 #define UNUSABLE 0xFEA0
-#define UNUSABLE_SIZE 0x005F
+#define UNUSABLE_SIZE 0x0060
 #define IO 0xFF00
 #define IO_SIZE 0x0080
 #define HIGH_RAM 0xFF80
@@ -95,6 +95,8 @@ void memory_write_8(uint16_t addr, uint8_t value) {
         memory.work_ram_n[addr - WORK_RAM_N] = value;
     else if (addr >= OAM_RAM && addr < OAM_RAM + OAM_RAM_SIZE)
         memory.oam_ram[addr - OAM_RAM] = value;
+    else if (addr >= UNUSABLE && addr < UNUSABLE + UNUSABLE_SIZE)
+        LOG_MESG(LOG_WARN, "Writing in a forbidden area ! (0x%04X)", addr);
     else if (addr >= IO && addr < IO + IO_SIZE)
         memory.io[addr - IO] = value;
     else if (addr >= HIGH_RAM && addr < HIGH_RAM + HIGH_RAM_SIZE)
