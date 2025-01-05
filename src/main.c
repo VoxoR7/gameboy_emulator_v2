@@ -66,7 +66,9 @@ int main() {
 
     uint64_t m_cycles_total = 0, instruction_executed = 0;
 
+    input_load();
     do {
+        input_run();
         if (!cpu_debug_run())
             break;
         uint8_t m_cycles = cpu_execute();

@@ -119,6 +119,9 @@ void cpu_print_next_instr() {
         case 0x21:
             LOG_MESG(LOG_DEBUG, "%s LD HL, d16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
+        case 0x2F:
+            LOG_MESG(LOG_DEBUG, "%s CPL", msg);
+            break;
         case 0x2A:
             LOG_MESG(LOG_DEBUG, "%s LD A, (HL); INC HL", msg);
             break;
@@ -166,6 +169,9 @@ void cpu_print_next_instr() {
             break;
         case 0xF3:
             LOG_MESG(LOG_DEBUG, "%s DI", msg);
+            break;
+        case 0xFB:
+            LOG_MESG(LOG_DEBUG, "%s EI", msg);
             break;
         case 0xFE:
             LOG_MESG(LOG_DEBUG, "%s CP d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
@@ -257,6 +263,10 @@ uint8_t cpu_execute() {
             cpu.registers.a = memory_read_8(cpu.registers.hl);
             cpu.registers.hl++;
             return 2;
+        case 0x2F: /* CPL */
+            cpu.registers.f |= FLAGS_N | FLAGS_H;
+            cpu.registers.a = ~cpu.registers.a;
+            return 1;
         case 0x31: /* LD SP, d16 */
             cpu.registers.sp = memory_read_16(cpu.registers.pc);
             cpu.registers.pc += 2;
@@ -317,6 +327,9 @@ uint8_t cpu_execute() {
             return 3;
         case 0xF3: /* DI */
             interrupt_disable();    
+            return 1;
+        case 0xFB: /* EI */
+            interrupt_enable();
             return 1;
         case 0xFE: /* CP d8 */
             cpu.registers.f = FLAGS_ALL;

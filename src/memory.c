@@ -96,7 +96,7 @@ void memory_write_8(uint16_t addr, uint8_t value) {
     else if (addr >= OAM_RAM && addr < OAM_RAM + OAM_RAM_SIZE)
         memory.oam_ram[addr - OAM_RAM] = value;
     else if (addr >= UNUSABLE && addr < UNUSABLE + UNUSABLE_SIZE)
-        LOG_MESG(LOG_WARN, "Writing in a forbidden area ! (0x%04X)", addr);
+        LOG_MESG(LOG_WARN, "Writing in a forbidden area! (0x%04X)", addr);
     else if (addr >= IO && addr < IO + IO_SIZE)
         memory.io[addr - IO] = value;
     else if (addr >= HIGH_RAM && addr < HIGH_RAM + HIGH_RAM_SIZE)
