@@ -75,15 +75,20 @@ bool input_is_pressed(enum input_key_e query) {
     #define START 0x08
 
 void input_run() {
+    static bool startup = true;
     uint8_t select = memory_read_8(JOYPAD_ADDR);
-    if ((select & SELECT_D_PAD) && (select & SELECT_BUTTONS)) {
-        LOG_MESG(LOG_FATAL, "Both d-pad and buttons are selected");
+    if ((!(select & SELECT_D_PAD)) && (!(select & SELECT_BUTTONS))) {
+        if (startup)
+            return;
+        LOG_MESG(LOG_WARN, "Both d-pad and buttons are selected");
         exit(EXIT_FAILURE);
     }
 
+    startup = false;
+
     select |= 0xCF;
 
-    if (select & SELECT_D_PAD) {
+    if (!(select & SELECT_D_PAD)) {
         if (status[INPUT_KEY_D])
             select &= ~RIGHT;
         if (status[INPUT_KEY_Q])
@@ -92,7 +97,7 @@ void input_run() {
             select &= ~UP;
         if (status[INPUT_KEY_S])
             select &= ~DOWN;
-    } else if (select & SELECT_BUTTONS) {
+    } else if (!(select & SELECT_BUTTONS)) {
         if (status[INPUT_KEY_P])
             select &= ~A;
         if (status[INPUT_KEY_L])
