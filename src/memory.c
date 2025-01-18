@@ -3,6 +3,9 @@
 #include "log.h"
 
 #include "memory.h"
+#include "main.h"
+
+#define OAM_DMA_ADDR 0xFF46
 
 #define CARTRIDGE_BANK_0 0x0000
 #define CARTRIDGE_BANK_0_SIZE 0x4000
@@ -82,6 +85,13 @@ uint8_t memory_read_8(uint16_t addr) {
     exit(EXIT_FAILURE);
 }
 
+static void start_oam_dma(uint8_t src) {
+    for (uint8_t i = 0; i < 0xA0; i++)
+        memory.oam_ram[i] = memory_read_8((((uint16_t)src) << 8) + i);
+
+    main_add_m_cycles(160);
+}
+
 void memory_write_8(uint16_t addr, uint8_t value) {
     if (addr < CARTRIDGE_BANK_0 + CARTRIDGE_BANK_0_SIZE)
         *(memory.cartridge_bank_0 + addr) = value;
@@ -97,6 +107,8 @@ void memory_write_8(uint16_t addr, uint8_t value) {
         memory.oam_ram[addr - OAM_RAM] = value;
     else if (addr >= UNUSABLE && addr < UNUSABLE + UNUSABLE_SIZE)
         LOG_MESG(LOG_WARN, "Writing in a forbidden area! (0x%04X)", addr);
+    else if (addr == OAM_DMA_ADDR)
+        start_oam_dma(value);
     else if (addr >= IO && addr < IO + IO_SIZE)
         memory.io[addr - IO] = value;
     else if (addr >= HIGH_RAM && addr < HIGH_RAM + HIGH_RAM_SIZE)

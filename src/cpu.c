@@ -113,11 +113,41 @@ void cpu_print_next_instr() {
         case 0x0E:
             LOG_MESG(LOG_DEBUG, "%s LD C, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
             break;
+        case 0x11:
+            LOG_MESG(LOG_DEBUG, "%s LD DE, d16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
+            break;
+        case 0x12:
+            LOG_MESG(LOG_DEBUG, "%s LD (DE), A", msg);
+            break;
+        case 0x13:
+            LOG_MESG(LOG_DEBUG, "%s INC DE", msg);
+            break;
+        case 0x16:
+            LOG_MESG(LOG_DEBUG, "%s LD D, d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0x19:
+            LOG_MESG(LOG_DEBUG, "%s ADD HL, DE", msg);
+            break;
+        case 0x1A:
+            LOG_MESG(LOG_DEBUG, "%s LD A, (DE)", msg);
+            break;
         case 0x20:
             LOG_MESG(LOG_DEBUG, "%s JR NZ, r8 (%d)", msg, (int8_t)memory_read_8(cpu.registers.pc + 1));
             break;
         case 0x21:
             LOG_MESG(LOG_DEBUG, "%s LD HL, d16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
+            break;
+        case 0x22:
+            LOG_MESG(LOG_DEBUG, "%s LD (HL), A; HL++", msg);
+            break;
+        case 0x23:
+            LOG_MESG(LOG_DEBUG, "%s INC HL", msg);
+            break;
+        case 0x28:
+            LOG_MESG(LOG_DEBUG, "%s JR Z, r8 (%d)", msg, (int8_t)memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0x2C:
+            LOG_MESG(LOG_DEBUG, "%s INC L", msg);
             break;
         case 0x2F:
             LOG_MESG(LOG_DEBUG, "%s CPL", msg);
@@ -130,6 +160,9 @@ void cpu_print_next_instr() {
             break;
         case 0x32:
             LOG_MESG(LOG_DEBUG, "%s LD (HL), A; DEC HL", msg);
+            break;
+        case 0x35:
+            LOG_MESG(LOG_DEBUG, "%s DEC (HL)", msg);
             break;
         case 0x36:
             LOG_MESG(LOG_DEBUG, "%s LD (HL), d8 (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
@@ -146,14 +179,35 @@ void cpu_print_next_instr() {
         case 0x4F:
             LOG_MESG(LOG_DEBUG, "%s LD C, A", msg);
             break;
+        case 0x56:
+            LOG_MESG(LOG_DEBUG, "%s LD D, (HL)", msg);
+            break;
+        case 0x5E:
+            LOG_MESG(LOG_DEBUG, "%s LD E, (HL)", msg);
+            break;
+        case 0x5F:
+            LOG_MESG(LOG_DEBUG, "%s LD E, A", msg);
+            break;
         case 0x78:
             LOG_MESG(LOG_DEBUG, "%s LD A, B", msg);
             break;
         case 0x79:
             LOG_MESG(LOG_DEBUG, "%s LD A, C", msg);
             break;
+        case 0x7C:
+            LOG_MESG(LOG_DEBUG, "%s LD A, H", msg);
+            break;
+        case 0x7E:
+            LOG_MESG(LOG_DEBUG, "%s LD A, (HL)", msg);
+            break;
+        case 0x87:
+            LOG_MESG(LOG_DEBUG, "%s ADD A, A", msg);
+            break;
         case 0xA1:
             LOG_MESG(LOG_DEBUG, "%s AND A, C", msg);
+            break;
+        case 0xA7:
+            LOG_MESG(LOG_DEBUG, "%s AND A, A", msg);
             break;
         case 0xA9:
             LOG_MESG(LOG_DEBUG, "%s XOR A, C", msg);
@@ -167,11 +221,20 @@ void cpu_print_next_instr() {
         case 0xB1:
             LOG_MESG(LOG_DEBUG, "%s OR C", msg);
             break;
+        case 0xC1:
+            LOG_MESG(LOG_DEBUG, "%s POP BC", msg);
+            break;
         case 0xC3:
             LOG_MESG(LOG_DEBUG, "%s JP a16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
+        case 0xC5:
+            LOG_MESG(LOG_DEBUG, "%s PUSH BC", msg);
+            break;
         case 0xC9:
             LOG_MESG(LOG_DEBUG, "%s RET", msg);
+            break;
+        case 0xCA:
+            LOG_MESG(LOG_DEBUG, "%s JP Z, a16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
         case 0xCB:
             LOG_MESG(LOG_DEBUG, "%s LD PREFIX CB (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
@@ -179,23 +242,50 @@ void cpu_print_next_instr() {
         case 0xCD:
             LOG_MESG(LOG_DEBUG, "%s CALL a16 (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
+        case 0xD1:
+            LOG_MESG(LOG_DEBUG, "%s POP DE", msg);
+            break;
+        case 0xD5:
+            LOG_MESG(LOG_DEBUG, "%s PUSH DE", msg);
+            break;
         case 0xE0:
             LOG_MESG(LOG_DEBUG, "%s LD ($FF00+a8), A (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
+            break;
+        case 0xE1:
+            LOG_MESG(LOG_DEBUG, "%s POP HL", msg);
             break;
         case 0xE2:
             LOG_MESG(LOG_DEBUG, "%s ($FF00+C), A", msg);
             break;
+        case 0xE5:
+            LOG_MESG(LOG_DEBUG, "%s PUSH HL", msg);
+            break;
         case 0xE6:
             LOG_MESG(LOG_DEBUG, "%s AND d8", msg);
+            break;
+        case 0xE9:
+            LOG_MESG(LOG_DEBUG, "%s JP HL", msg);
             break;
         case 0xEA:
             LOG_MESG(LOG_DEBUG, "%s LD (a16), A (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
+        case 0xEF:
+            LOG_MESG(LOG_DEBUG, "%s RST 028H", msg);
+            break;
         case 0xF0:
             LOG_MESG(LOG_DEBUG, "%s LD A, ($FF00+a8) (0x%02X)", msg, memory_read_8(cpu.registers.pc + 1));
             break;
+        case 0xF1:
+            LOG_MESG(LOG_DEBUG, "%s POP AF", msg);
+            break;
         case 0xF3:
             LOG_MESG(LOG_DEBUG, "%s DI", msg);
+            break;
+        case 0xF5:
+            LOG_MESG(LOG_DEBUG, "%s PUSH AF", msg);
+            break;
+        case 0xFA:
+            LOG_MESG(LOG_DEBUG, "%s LD A, (a16) (0x%04X)", msg, memory_read_16(cpu.registers.pc + 1));
             break;
         case 0xFB:
             LOG_MESG(LOG_DEBUG, "%s EI", msg);
@@ -229,6 +319,9 @@ static uint8_t cpu_execute_prefix_cb() {
             uint8_t a = cpu.registers.a;
             cpu.registers.a = ((a & 0x0F) << 4) + ((a & 0xF0) >> 4);
             return 2;
+        case 0x87: /* RES 0, A */
+            cpu.registers.a &= 0b1111'1110;
+            return 2;
         default:
             LOG_MESG(LOG_WARN, "PREFIX CB unimplemented: 0x%02X at pc 0x%04X", instr, (cpu.registers.pc) - 1);
             return 0;
@@ -241,6 +334,7 @@ uint8_t cpu_execute() {
     cpu.registers.pc++;
 
     uint8_t d8;
+    int8_t r8;
 
     switch (instr) {
         case 0x00: /* NOP */
@@ -296,8 +390,39 @@ uint8_t cpu_execute() {
             cpu.registers.c = memory_read_8(cpu.registers.pc);
             cpu.registers.pc += 1;
             return 2;
+        case 0x11: /* LD DE, d16 */
+            cpu.registers.de = memory_read_16(cpu.registers.pc);
+            cpu.registers.pc += 2;
+            return 3;
+        case 0x12: /* LD (DE), A */
+            memory_write_8(cpu.registers.de, cpu.registers.a);
+            return 2;
+        case 0x13: /* INC DE */
+            cpu.registers.de++;
+            return 2;
+        case 0x16: /* LD D, d8 */
+            cpu.registers.d = memory_read_8(cpu.registers.pc);
+            cpu.registers.pc += 1;
+            return 2;
+        case 0x19: /* ADD HL, DE */
+            cpu.registers.f &= ~FLAGS_N;
+            if (((cpu.registers.hl & 0x0FFF) + (cpu.registers.de & 0x0FFF)) & 0xF000)
+                cpu.registers.f |= FLAGS_H;
+            else
+                cpu.registers.f &= ~FLAGS_H;
+
+            if ((uint64_t)cpu.registers.hl + (uint64_t)cpu.registers.de > UINT16_MAX)
+                cpu.registers.f |= FLAGS_C;
+            else
+                cpu.registers.f &= ~FLAGS_C;
+
+            cpu.registers.hl += cpu.registers.de;
+            return 2;
+        case 0x1A: /* LD A, (DE) */
+            cpu.registers.a = memory_read_8(cpu.registers.de);
+            return 2;
         case 0x20: /* JR NZ, r8 */
-            int8_t r8 = (int8_t)memory_read_8(cpu.registers.pc);
+            r8 = (int8_t)memory_read_8(cpu.registers.pc);
             cpu.registers.pc++;
             if (cpu.registers.f & FLAGS_Z)
                 return 2;
@@ -308,10 +433,40 @@ uint8_t cpu_execute() {
             cpu.registers.hl = memory_read_16(cpu.registers.pc);
             cpu.registers.pc += 2;
             return 3;
+        case 0x22: /* LD (HL), A; HL++ */
+            memory_write_8(cpu.registers.hl, cpu.registers.a);
+            cpu.registers.hl++;
+            return 2;
+        case 0x23: /* INC HL */
+            cpu.registers.hl++;
+            return 2;
+        case 0x28: /* JR Z, r8 */
+            r8 = (int8_t)memory_read_8(cpu.registers.pc);
+            cpu.registers.pc++;
+            if (!(cpu.registers.f & FLAGS_Z))
+                return 2;
+
+            cpu.registers.pc += r8;
+            return 3;
         case 0x2A: /* LD A, (HL); INC HL */
             cpu.registers.a = memory_read_8(cpu.registers.hl);
             cpu.registers.hl++;
             return 2;
+        case 0x2C: /* INC L */
+            cpu.registers.f &= ~FLAGS_N;
+
+            if (((cpu.registers.l & 0x0F) + 1) & 0xF0)
+                cpu.registers.f |= FLAGS_H;
+            else
+                cpu.registers.f &= ~FLAGS_H;
+
+            cpu.registers.l++;
+
+            if (cpu.registers.l)
+                cpu.registers.f &= ~FLAGS_Z;
+            else
+                cpu.registers.l |= FLAGS_Z;
+            return 1;
         case 0x2F: /* CPL */
             cpu.registers.f |= FLAGS_N | FLAGS_H;
             cpu.registers.a = ~cpu.registers.a;
@@ -324,6 +479,23 @@ uint8_t cpu_execute() {
             memory_write_8(cpu.registers.hl, cpu.registers.a);
             cpu.registers.hl--;
             return 2;
+        case 0x35: /* DEC (HL) */
+            cpu.registers.f |= FLAGS_N;
+            uint8_t val = memory_read_8(cpu.registers.hl);
+            if (((val & 0xF) - 1) & 0xF0)
+                cpu.registers.f |= FLAGS_H;
+            else
+                cpu.registers.f &= ~FLAGS_H;
+
+            val--;
+
+            if (val)
+                cpu.registers.f &= ~FLAGS_Z;
+            else
+                cpu.registers.f |= FLAGS_Z;
+
+            memory_write_8(cpu.registers.hl, val);
+            return 3;
         case 0x36: /* LD (HL), d8 */
             d8 = memory_read_8(cpu.registers.pc);
             cpu.registers.pc++;
@@ -343,11 +515,38 @@ uint8_t cpu_execute() {
         case 0x4F: /* LD C, A */
             cpu.registers.c = cpu.registers.a;
             return 1;
+        case 0x56: /* LD D, (HL) */
+            cpu.registers.d = memory_read_8(cpu.registers.hl);
+            return 2;
+        case 0x5E: /* LD E, (HL) */
+            cpu.registers.e = memory_read_8(cpu.registers.hl);
+            return 2;
+        case 0x5F: /* LD E, A */
+            cpu.registers.e = cpu.registers.a;
+            return 1;
         case 0x78: /* LD A, B */
             cpu.registers.a = cpu.registers.b;
             return 1;
         case 0x79: /* LD A, C */
             cpu.registers.a = cpu.registers.c;
+            return 1;
+        case 0x7C: /* LD A, H */
+            cpu.registers.a = cpu.registers.h;
+            return 1;
+        case 0x7E: /* LD A, (HL) */
+            cpu.registers.a = memory_read_8(cpu.registers.hl);
+            return 2;
+        case 0x87: /* ADD A, A */
+            cpu.registers.f = FLAGS_RST;
+            if (((cpu.registers.a & 0x0F) + (cpu.registers.a & 0x0F)) & 0xF0)
+                cpu.registers.f |= FLAGS_H;
+            if (cpu.registers.a >= 128)
+                cpu.registers.f |= FLAGS_C;
+
+            cpu.registers.a *= 2;
+
+            if (!cpu.registers.a)
+                cpu.registers.f |= FLAGS_Z;
             return 1;
         case 0xA1: /* AND A, C */
             cpu.registers.a &= cpu.registers.c;
@@ -355,6 +554,11 @@ uint8_t cpu_execute() {
                 cpu.registers.f = FLAGS_H;
             else
                 cpu.registers.f = FLAGS_Z | FLAGS_H;
+            return 1;
+        case 0xA7: /* AND A, A */
+            cpu.registers.f = FLAGS_H;
+            if (!cpu.registers.a)
+                cpu.registers.f |= FLAGS_Z;
             return 1;
         case 0xA9: /* XOR A, C */
             cpu.registers.a ^= cpu.registers.c;
@@ -381,12 +585,28 @@ uint8_t cpu_execute() {
             else
                 cpu.registers.f = FLAGS_Z;
             return 1;
+        case 0xC1: /* POP BC */
+            cpu.registers.bc = memory_read_16(cpu.registers.sp);
+            cpu.registers.sp += 2;
+            return 3;
         case 0xC3: /* JP a16 */
             cpu.registers.pc = memory_read_16(cpu.registers.pc);
             return 3;
+        case 0xC5: /* PUSH BC */
+            cpu.registers.sp -= 2;
+            memory_write_16(cpu.registers.sp, cpu.registers.bc);
+            return 4;
         case 0xC9: /* RET */
             cpu.registers.pc = memory_read_16(cpu.registers.sp);
             cpu.registers.sp += 2;
+            return 4;
+        case 0xCA: /* JP Z, a16 */
+            uint16_t a16 = memory_read_16(cpu.registers.pc);
+            cpu.registers.pc += 2;
+            if (!(cpu.registers.f & FLAGS_Z))
+                return 3;
+
+            cpu.registers.pc = a16;
             return 4;
         case 0xCB: /* PREFIX CB */
             return cpu_execute_prefix_cb();
@@ -395,13 +615,29 @@ uint8_t cpu_execute() {
             memory_write_16(cpu.registers.sp, cpu.registers.pc + 2);
             cpu.registers.pc = memory_read_16(cpu.registers.pc);
             return 6;
+        case 0xD1: /* POP DE */
+            cpu.registers.de = memory_read_16(cpu.registers.sp);
+            cpu.registers.sp += 2;
+            return 3;
+        case 0xD5: /* PUSH DE */
+            cpu.registers.sp -= 2;
+            memory_write_16(cpu.registers.sp, cpu.registers.de);
+            return 4;
         case 0xE0: /* LD ($FF00+a8),A */
             memory_write_8(0xFF00 + memory_read_8(cpu.registers.pc), cpu.registers.a);
             cpu.registers.pc++;
             return 3;
+        case 0xE1: /* POP HL */
+            cpu.registers.hl = memory_read_16(cpu.registers.sp);
+            cpu.registers.sp += 2;
+            return 3;
         case 0xE2: /* ($FF00+C), A */
             memory_write_8(0xFF00 + cpu.registers.c, cpu.registers.a);
             return 2;
+        case 0xE5: /* PUSH HL */
+            cpu.registers.sp -= 2;
+            memory_write_16(cpu.registers.sp, cpu.registers.hl);
+            return 4;
         case 0xE6: /* AND d8 */
             cpu.registers.f = FLAGS_H;
             d8 = memory_read_8(cpu.registers.pc);
@@ -410,17 +646,37 @@ uint8_t cpu_execute() {
             if (!cpu.registers.a)
                 cpu.registers.f |= FLAGS_Z;
             return 2;
+        case 0xE9: /* JP HL */
+            cpu.registers.pc = cpu.registers.hl;
+            return 1;
         case 0xEA: /* LD (a16), A */
             memory_write_8(memory_read_16(cpu.registers.pc), cpu.registers.a);
             cpu.registers.pc += 2;
+            return 4;
+        case 0xEF: /* RST 028H */
+            cpu.registers.sp -= 2;
+            memory_write_16(cpu.registers.sp, cpu.registers.pc);
+            cpu.registers.pc = 0x28;
             return 4;
         case 0xF0: /* LD A,($FF00+a8) */
             cpu.registers.a = memory_read_8(0xFF00 + memory_read_8(cpu.registers.pc));
             cpu.registers.pc++;
             return 3;
+        case 0xF1: /* POP AF */
+            cpu.registers.af = memory_read_16(cpu.registers.sp);
+            cpu.registers.sp += 2;
+            return 3;
         case 0xF3: /* DI */
             interrupt_disable();    
             return 1;
+        case 0xF5: /* PUSH AF */
+            cpu.registers.sp -= 2;
+            memory_write_16(cpu.registers.sp, cpu.registers.af);
+            return 4;
+        case 0xFA: /* LD A, (a16) */
+            cpu.registers.a = memory_read_8(cpu.registers.pc);
+            cpu.registers.pc += 2;
+            return 4;
         case 0xFB: /* EI */
             interrupt_enable();
             return 1;
