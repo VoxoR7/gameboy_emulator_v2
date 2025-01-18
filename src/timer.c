@@ -58,19 +58,19 @@ static bool timer_tima(uint8_t m_cycles) {
                 return timer_inc_tima();
             }
             return false;
-        case 0x01:
+        case 0b01:
             if (m_cycles_ellapsed >= TIMER_TIMA_01_MACHINE_CLOCK) {
                 m_cycles_ellapsed -= TIMER_TIMA_01_MACHINE_CLOCK;
                 return timer_inc_tima();
             }
             return false;
-        case 0x10:
+        case 0b10:
             if (m_cycles_ellapsed >= TIMER_TIMA_10_MACHINE_CLOCK) {
                 m_cycles_ellapsed -= TIMER_TIMA_10_MACHINE_CLOCK;
                 return timer_inc_tima();
             }
             return false;
-        case 0x11:
+        case 0b11:
             if (m_cycles_ellapsed >= TIMER_TIMA_11_MACHINE_CLOCK) {
                 m_cycles_ellapsed -= TIMER_TIMA_11_MACHINE_CLOCK;
                 return timer_inc_tima();
