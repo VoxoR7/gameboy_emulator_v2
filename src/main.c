@@ -107,8 +107,7 @@ int main() {
         m_cycles_total += m_cycles;
         instruction_executed++;
         interrupt_run(m_cycles);
-        ppu_run(m_cycles, gb_screen, tile_screen, map_0);
-        input_load();
+        ppu_run(m_cycles, gb_screen, NULL, NULL);
     } while(!input_is_pressed(INPUT_KEY_ESCAPE));
 
     LOG_MESG(LOG_INFO, "m cycles elapsed: %"PRIu64", instructions executed: %"PRIu64"", m_cycles_total, instruction_executed);

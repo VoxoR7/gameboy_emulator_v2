@@ -121,10 +121,18 @@ void screen_print(struct screen_s *screen, uint32_t x, uint32_t y, uint8_t r, ui
 
 void screen_draw_pixel(struct screen_s *screen, uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b) {
     SDL_SetRenderDrawColor(screen->renderer, r, g, b, 255);
+    SDL_FRect rect = {
+        .x = x * screen->scale,
+        .y = y * screen->scale,
+        .w = screen->scale,
+        .h = screen->scale
+    };
 
-    for (uint32_t i = 0; i < screen->scale; i++)
+    SDL_RenderFillRect(screen->renderer, &rect);
+
+    /*for (uint32_t i = 0; i < screen->scale; i++)
         for (uint32_t j = 0; j < screen->scale; j++)
-            SDL_RenderPoint(screen->renderer, x * screen->scale + i, y * screen->scale + j);
+            SDL_RenderPoint(screen->renderer, x * screen->scale + i, y * screen->scale + j);*/
 }
 
 void screen_present(struct screen_s *screen) {

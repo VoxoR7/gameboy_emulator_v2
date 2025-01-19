@@ -5,6 +5,7 @@
 #include "ppu.h"
 #include "memory.h"
 #include "fps.h"
+#include "input.h"
 
 #define INTERRUPT_IF 0xFF0F
 #define INT_VBLANK  0b00'00'00'01
@@ -214,6 +215,7 @@ void ppu_run(uint8_t m_cycles, struct screen_s *screen, struct screen_s *tiles_s
                     // screen_present(screen);
                     memory_write_8(INTERRUPT_IF, memory_read_8(INTERRUPT_IF) | INT_VBLANK);
                     mode = VERTICAL_BLANK;
+                    input_load();
                     fps_wait(16.74 * 1'000'000);
                     screen_present(screen);
                     if (tiles_screen)
