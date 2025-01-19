@@ -7,6 +7,7 @@
 
 struct cpu_s;
 
+void cpu_init();
 void cpu_reset();
 
 void cpu_interrupt(uint16_t addr);

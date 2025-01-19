@@ -84,7 +84,7 @@ int main() {
 
     memory_reset();
     memory_cartridge_load(cartridge);
-    cpu_reset();
+    cpu_init();
     interrupt_reset();
 
     uint64_t m_cycles_total = 0, instruction_executed = 0;
