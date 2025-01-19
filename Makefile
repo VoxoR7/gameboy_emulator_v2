@@ -15,7 +15,8 @@ SDL3_TTF_PATH=/home/mathieu/Documents/dev/tools/SDL_ttf/bin
 SDL3_TTF_INCLUDES=${SDL3_TTF_PATH}/include
 SDL3_TTF_LIB=${SDL3_TTF_PATH}/lib
 
-
+LINKER_PATH=-L${SDL3_LIB} -L${SDL3_TTF_LIB} -Llib/lib
+LINKER_FLAGS=-lSDL3 -lSDL3_ttf '-Wl,-rpath,${SDL3_LIB}' '-Wl,-rpath,${SDL3_TTF_LIB}' -llog
 
 ifeq ($(shell echo "check_quotes"),"check_quotes")
 	WINDOWS=yes

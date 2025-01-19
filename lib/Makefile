@@ -1,4 +1,4 @@
-CMAKE=C:\Users\mvaud\Documents\info\tools\winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-19.1.1-mingw-w64ucrt-12.0.0-r2\mingw64\bin\cmake.exe
+CMAKE=cmake
 
 LIB_FOLDER=lib
 
